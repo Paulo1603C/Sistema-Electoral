@@ -1,0 +1,42 @@
+.datos__Institucion{
+    display: flex;
+    flex-direction:column;   
+}
+
+.datos__Sistema{
+    display: flex;
+    flex-direction:column;
+}
+
+form{
+    border: 2px solid black;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.container{
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.container2{
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+h3,h2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.add__information{
+    border: 2px solid black;
+    padding: 8px;
+    border-radius: 8px;
+}
