@@ -1,34 +1,63 @@
 <div class="login-page">
+  <div class="login-page-blob login-page-blob--one"></div>
+  <div class="login-page-blob login-page-blob--two"></div>
+
   <div class="login-card">
+    <div class="login-logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="9" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M8 9V7a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 13.5l2 2 4-4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
     <h1 class="login-title">Sistema Electoral</h1>
     <p class="login-subtitle">Ingrese sus credenciales para continuar</p>
 
     <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
       <div class="form-field">
         <label for="usuario">Usuario</label>
-        <input
-          type="text"
-          id="usuario"
-          name="usuario"
-          placeholder="Ingrese su usuario"
-          autocomplete="username"
-          [(ngModel)]="usuario"
-          required>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <input
+            type="text"
+            id="usuario"
+            name="usuario"
+            placeholder="Ingrese su usuario"
+            autocomplete="username"
+            [(ngModel)]="usuario"
+            required>
+        </div>
       </div>
 
       <div class="form-field">
         <label for="contrasena">Contraseña</label>
-        <input
-          type="password"
-          id="contrasena"
-          name="contrasena"
-          placeholder="Ingrese su contraseña"
-          autocomplete="current-password"
-          [(ngModel)]="contrasena"
-          required>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4.5" y="10.5" width="15" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <input
+            type="password"
+            id="contrasena"
+            name="contrasena"
+            placeholder="Ingrese su contraseña"
+            autocomplete="current-password"
+            [(ngModel)]="contrasena"
+            required>
+        </div>
       </div>
 
-      <p class="login-error" *ngIf="errorMensaje">{{ errorMensaje }}</p>
+      <p class="login-error" *ngIf="errorMensaje" role="alert">
+        <svg class="login-error-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>{{ errorMensaje }}</span>
+      </p>
 
       <button type="submit" class="login-button">Ingresar</button>
     </form>
