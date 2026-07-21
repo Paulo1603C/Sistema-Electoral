@@ -1,1 +1,36 @@
-<p>page-login works!</p>
+<div class="login-page">
+  <div class="login-card">
+    <h1 class="login-title">Sistema Electoral</h1>
+    <p class="login-subtitle">Ingrese sus credenciales para continuar</p>
+
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+      <div class="form-field">
+        <label for="usuario">Usuario</label>
+        <input
+          type="text"
+          id="usuario"
+          name="usuario"
+          placeholder="Ingrese su usuario"
+          autocomplete="username"
+          [(ngModel)]="usuario"
+          required>
+      </div>
+
+      <div class="form-field">
+        <label for="contrasena">Contraseña</label>
+        <input
+          type="password"
+          id="contrasena"
+          name="contrasena"
+          placeholder="Ingrese su contraseña"
+          autocomplete="current-password"
+          [(ngModel)]="contrasena"
+          required>
+      </div>
+
+      <p class="login-error" *ngIf="errorMensaje">{{ errorMensaje }}</p>
+
+      <button type="submit" class="login-button">Ingresar</button>
+    </form>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { PageLoginComponent } from './page-login.component';
 
@@ -8,6 +9,7 @@ describe('PageLoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [ FormsModule ],
       declarations: [ PageLoginComponent ]
     })
     .compileComponents();
@@ -21,5 +23,16 @@ describe('PageLoginComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the username and password fields', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('#usuario')).toBeTruthy();
+    expect(compiled.querySelector('#contrasena')).toBeTruthy();
+  });
+
+  it('should show an error when submitting empty fields', () => {
+    component.onSubmit();
+    expect(component.errorMensaje).toBeTruthy();
   });
 });
