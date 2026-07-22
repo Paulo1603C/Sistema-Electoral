@@ -69,4 +69,39 @@ describe('PageDatosVotanteComponent', () => {
     component.salir();
     expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
+
+  it('should render the 3 candidate cards', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.candidatos.length).toBe(3);
+    const tarjetas = compiled.querySelectorAll('.candidato-card');
+    expect(tarjetas.length).toBe(3);
+  });
+
+  it('should mark the selected candidate and show a native alert', () => {
+    spyOn(window, 'alert');
+    const candidato = component.candidatos[1];
+
+    component.seleccionarCandidato(candidato);
+    fixture.detectChanges();
+
+    expect(component.candidatoSeleccionado).toEqual(candidato);
+    expect(window.alert).toHaveBeenCalledWith('usuario marcado');
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const tarjetaSeleccionada = compiled.querySelector(`#candidato-${candidato.id}`);
+    expect(tarjetaSeleccionada?.classList).toContain('candidato-card--seleccionado');
+  });
+
+  it('should call seleccionarCandidato when a candidate card is clicked', () => {
+    spyOn(window, 'alert');
+    spyOn(component, 'seleccionarCandidato').and.callThrough();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const primeraTarjeta = compiled.querySelector('.candidato-card') as HTMLButtonElement;
+    primeraTarjeta.click();
+    fixture.detectChanges();
+
+    expect(component.seleccionarCandidato).toHaveBeenCalledWith(component.candidatos[0]);
+    expect(window.alert).toHaveBeenCalledWith('usuario marcado');
+  });
 });

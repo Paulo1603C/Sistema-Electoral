@@ -2,51 +2,75 @@
   <div class="votante-page-blob votante-page-blob--one"></div>
   <div class="votante-page-blob votante-page-blob--two"></div>
 
-  <div class="votante-card">
-    <header class="votante-header">
-      <div class="votante-avatar" aria-hidden="true">{{ iniciales }}</div>
-      <div class="votante-header-text">
-        <h1 class="votante-title">{{ votante.nombre }}</h1>
-        <p class="votante-subtitle">Información del padrón electoral</p>
-      </div>
-    </header>
+  <div class="votante-content">
+    <div class="votante-card">
+      <header class="votante-header">
+        <div class="votante-avatar" aria-hidden="true">{{ iniciales }}</div>
+        <div class="votante-header-text">
+          <h1 class="votante-title">{{ votante.nombre }}</h1>
+          <p class="votante-subtitle">Información del padrón electoral</p>
+        </div>
+      </header>
 
-    <dl class="votante-datos">
-      <div class="dato">
-        <dt>Nombre</dt>
-        <dd id="dato-nombre">{{ votante.nombre }}</dd>
-      </div>
+      <dl class="votante-datos">
+        <div class="dato">
+          <dt>Nombre</dt>
+          <dd id="dato-nombre">{{ votante.nombre }}</dd>
+        </div>
 
-      <div class="dato">
-        <dt>Cédula</dt>
-        <dd id="dato-cedula">{{ votante.cedula }}</dd>
-      </div>
+        <div class="dato">
+          <dt>Cédula</dt>
+          <dd id="dato-cedula">{{ votante.cedula }}</dd>
+        </div>
 
-      <div class="dato">
-        <dt>Recinto electoral</dt>
-        <dd id="dato-recinto">{{ votante.recinto }}</dd>
-      </div>
+        <div class="dato">
+          <dt>Recinto electoral</dt>
+          <dd id="dato-recinto">{{ votante.recinto }}</dd>
+        </div>
 
-      <div class="dato">
-        <dt>Mesa</dt>
-        <dd id="dato-mesa">{{ votante.mesa }}</dd>
-      </div>
+        <div class="dato">
+          <dt>Mesa</dt>
+          <dd id="dato-mesa">{{ votante.mesa }}</dd>
+        </div>
 
-      <div class="dato">
-        <dt>Estado del voto</dt>
-        <dd>
-          <span
-            class="estado-voto"
-            id="dato-estado"
-            [class.estado-voto--votado]="yaVoto"
-            [class.estado-voto--pendiente]="!yaVoto">
-            <span class="estado-voto-punto" aria-hidden="true"></span>
-            {{ votante.estadoVoto }}
-          </span>
-        </dd>
-      </div>
-    </dl>
+        <div class="dato">
+          <dt>Estado del voto</dt>
+          <dd>
+            <span
+              class="estado-voto"
+              id="dato-estado"
+              [class.estado-voto--votado]="yaVoto"
+              [class.estado-voto--pendiente]="!yaVoto">
+              <span class="estado-voto-punto" aria-hidden="true"></span>
+              {{ votante.estadoVoto }}
+            </span>
+          </dd>
+        </div>
+      </dl>
 
-    <button type="button" class="votante-button" (click)="salir()">Cerrar sesión</button>
+      <button type="button" class="votante-button" (click)="salir()">Cerrar sesión</button>
+    </div>
+
+    <div class="candidatos-card">
+      <header class="candidatos-header">
+        <h2 class="candidatos-title">Elección de presidente</h2>
+        <p class="candidatos-subtitle">Selecciona un candidato para emitir tu voto</p>
+      </header>
+
+      <div class="candidatos-grid">
+        <button
+          type="button"
+          *ngFor="let candidato of candidatos"
+          [id]="'candidato-' + candidato.id"
+          class="candidato-card"
+          [class.candidato-card--seleccionado]="candidatoSeleccionado?.id === candidato.id"
+          (click)="seleccionarCandidato(candidato)">
+          <div class="candidato-avatar" [style.background]="candidato.color" aria-hidden="true">{{ candidato.iniciales }}</div>
+          <h3 class="candidato-nombre">{{ candidato.nombre }}</h3>
+          <p class="candidato-partido">{{ candidato.partido }}</p>
+          <span class="candidato-marca" *ngIf="candidatoSeleccionado?.id === candidato.id">✓ Marcado</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>

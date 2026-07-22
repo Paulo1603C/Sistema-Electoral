@@ -11,6 +11,16 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+.votante-content {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
 .votante-page-blob {
   position: absolute;
   border-radius: 50%;
@@ -188,6 +198,116 @@
   outline-offset: 2px;
 }
 
+.candidatos-card {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(9, 30, 66, 0.35);
+  box-sizing: border-box;
+  animation: votante-card-in 0.35s ease-out;
+}
+
+.candidatos-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8ecf1;
+  margin-bottom: 20px;
+}
+
+.candidatos-title {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+.candidatos-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #667085;
+}
+
+.candidatos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.candidato-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 22px 16px;
+  background: #f8fafc;
+  border: 2px solid #e8ecf1;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.candidato-card:hover {
+  border-color: #90caf9;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.18);
+}
+
+.candidato-card:active {
+  transform: translateY(1px);
+}
+
+.candidato-card:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+.candidato-card--seleccionado {
+  border-color: #1976d2;
+  background: #e3f2fd;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.3);
+}
+
+.candidato-avatar {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.candidato-nombre {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.candidato-partido {
+  margin: 0;
+  font-size: 12px;
+  color: #667085;
+}
+
+.candidato-marca {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+@media screen and (max-width: 720px) {
+  .candidatos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media screen and (max-width: 480px) {
   .votante-card {
     padding: 24px 20px;
@@ -201,5 +321,13 @@
 
   .dato dd {
     text-align: left;
+  }
+
+  .candidatos-card {
+    padding: 24px 20px;
+  }
+
+  .candidatos-grid {
+    grid-template-columns: 1fr;
   }
 }
