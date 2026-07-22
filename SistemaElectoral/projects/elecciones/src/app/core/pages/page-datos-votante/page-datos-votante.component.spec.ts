@@ -149,6 +149,17 @@ describe('PageDatosVotanteComponent', () => {
     expect(component.menuAbierto).toBeFalse();
   });
 
+  it('should not force its own scrollbar alongside the browser one', () => {
+    const votantePage = dom().querySelector('.votante-page') as HTMLElement;
+    const estilos = getComputedStyle(votantePage);
+
+    // overflow-x sin overflow-y explícito hace que el navegador calcule
+    // overflow-y como "auto", creando un scroll interno además del propio
+    // del documento. Ambos ejes deben quedar fijados explícitamente.
+    expect(estilos.overflowX).toBe('hidden');
+    expect(estilos.overflowY).toBe('hidden');
+  });
+
   it('should render the 3 candidate cards', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(component.candidatos.length).toBe(3);
