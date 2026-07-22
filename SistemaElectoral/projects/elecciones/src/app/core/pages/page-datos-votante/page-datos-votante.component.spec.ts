@@ -10,6 +10,15 @@ describe('PageDatosVotanteComponent', () => {
   let fixture: ComponentFixture<PageDatosVotanteComponent>;
   let router: Router;
 
+  /** Acceso corto al DOM renderizado del componente. */
+  const dom = (): HTMLElement => fixture.nativeElement as HTMLElement;
+
+  /** Abre el dropdown pulsando el avatar, como haría el usuario. */
+  const abrirMenu = (): void => {
+    (dom().querySelector('#avatar-usuario') as HTMLButtonElement).click();
+    fixture.detectChanges();
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ RouterTestingModule ],
@@ -35,29 +44,70 @@ describe('PageDatosVotanteComponent', () => {
     expect(component.votante).toEqual(esperado);
   });
 
-  it('should render every voter field', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const votante = component.votante;
+  it('should no longer render the big voter card', () => {
+    expect(dom().querySelector('.votante-card')).toBeNull();
+    expect(dom().querySelector('.votante-header')).toBeNull();
+  });
 
-    expect(compiled.querySelector('#dato-nombre')?.textContent).toContain(votante.nombre);
-    expect(compiled.querySelector('#dato-cedula')?.textContent).toContain(votante.cedula);
-    expect(compiled.querySelector('#dato-recinto')?.textContent).toContain(votante.recinto);
-    expect(compiled.querySelector('#dato-mesa')?.textContent).toContain(votante.mesa);
-    expect(compiled.querySelector('#dato-estado')?.textContent).toContain(votante.estadoVoto);
+  it('should render the avatar with the initials in the top bar', () => {
+    const avatar = dom().querySelector('#avatar-usuario');
+    expect(avatar).not.toBeNull();
+    expect(avatar?.textContent?.trim()).toBe(component.iniciales);
+    expect(dom().querySelector('.votante-topbar')?.contains(avatar as Node)).toBeTrue();
+  });
+
+  it('should keep the dropdown closed until the avatar is clicked', () => {
+    expect(component.menuAbierto).toBeFalse();
+    expect(dom().querySelector('#menu-usuario')).toBeNull();
+    expect(dom().querySelector('#dato-nombre')).toBeNull();
+
+    abrirMenu();
+
+    expect(component.menuAbierto).toBeTrue();
+    expect(dom().querySelector('#menu-usuario')).not.toBeNull();
+  });
+
+  it('should toggle the dropdown when the avatar is clicked twice', () => {
+    abrirMenu();
+    expect(component.menuAbierto).toBeTrue();
+
+    abrirMenu();
+    expect(component.menuAbierto).toBeFalse();
+    expect(dom().querySelector('#menu-usuario')).toBeNull();
+  });
+
+  it('should render every voter field inside the dropdown', () => {
+    abrirMenu();
+    const votante = component.votante;
+    const menu = dom().querySelector('#menu-usuario') as HTMLElement;
+
+    expect(menu.querySelector('#dato-nombre')?.textContent).toContain(votante.nombre);
+    expect(menu.querySelector('#dato-cedula')?.textContent).toContain(votante.cedula);
+    expect(menu.querySelector('#dato-recinto')?.textContent).toContain(votante.recinto);
+    expect(menu.querySelector('#dato-mesa')?.textContent).toContain(votante.mesa);
+    expect(menu.querySelector('#dato-estado')?.textContent).toContain(votante.estadoVoto);
+  });
+
+  it('should place the logout button as the last item of the dropdown', () => {
+    abrirMenu();
+    const menu = dom().querySelector('#menu-usuario') as HTMLElement;
+    const boton = menu.querySelector('#boton-salir') as HTMLButtonElement;
+
+    expect(boton).not.toBeNull();
+    expect(boton.textContent).toContain('Cerrar sesión');
+    expect(menu.lastElementChild).toBe(boton);
   });
 
   it('should style the vote status according to estadoVoto', () => {
     component.votante = { ...component.votante, estadoVoto: 'Votado' };
-    fixture.detectChanges();
+    abrirMenu();
     expect(component.yaVoto).toBeTrue();
-    let estado = (fixture.nativeElement as HTMLElement).querySelector('#dato-estado');
-    expect(estado?.classList).toContain('estado-voto--votado');
+    expect(dom().querySelector('#dato-estado')?.classList).toContain('estado-voto--votado');
 
     component.votante = { ...component.votante, estadoVoto: 'Pendiente' };
     fixture.detectChanges();
     expect(component.yaVoto).toBeFalse();
-    estado = (fixture.nativeElement as HTMLElement).querySelector('#dato-estado');
-    expect(estado?.classList).toContain('estado-voto--pendiente');
+    expect(dom().querySelector('#dato-estado')?.classList).toContain('estado-voto--pendiente');
   });
 
   it('should build the avatar initials from the first two names', () => {
@@ -65,9 +115,38 @@ describe('PageDatosVotanteComponent', () => {
     expect(component.iniciales).toBe('MF');
   });
 
-  it('should navigate back to the login when leaving', () => {
-    component.salir();
+  it('should keep the dropdown open when clicking inside it', () => {
+    abrirMenu();
+    (dom().querySelector('#dato-nombre') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(component.menuAbierto).toBeTrue();
+  });
+
+  it('should close the dropdown when clicking outside of it', () => {
+    abrirMenu();
+    document.body.click();
+    fixture.detectChanges();
+
+    expect(component.menuAbierto).toBeFalse();
+    expect(dom().querySelector('#menu-usuario')).toBeNull();
+  });
+
+  it('should close the dropdown when pressing Escape', () => {
+    abrirMenu();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+
+    expect(component.menuAbierto).toBeFalse();
+  });
+
+  it('should navigate back to the login when leaving from the dropdown', () => {
+    abrirMenu();
+    (dom().querySelector('#boton-salir') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
     expect(router.navigate).toHaveBeenCalledWith(['/']);
+    expect(component.menuAbierto).toBeFalse();
   });
 
   it('should render the 3 candidate cards', () => {

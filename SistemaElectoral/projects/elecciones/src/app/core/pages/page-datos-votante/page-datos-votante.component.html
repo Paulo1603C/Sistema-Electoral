@@ -3,53 +3,79 @@
   <div class="votante-page-blob votante-page-blob--two"></div>
 
   <div class="votante-content">
-    <div class="votante-card">
-      <header class="votante-header">
-        <div class="votante-avatar" aria-hidden="true">{{ iniciales }}</div>
-        <div class="votante-header-text">
-          <h1 class="votante-title">{{ votante.nombre }}</h1>
-          <p class="votante-subtitle">Información del padrón electoral</p>
-        </div>
-      </header>
+    <header class="votante-topbar">
+      <div class="votante-marca">
+        <span class="votante-marca-logo" aria-hidden="true">SE</span>
+        <span class="votante-marca-texto">Sistema Electoral</span>
+      </div>
 
-      <dl class="votante-datos">
-        <div class="dato">
-          <dt>Nombre</dt>
-          <dd id="dato-nombre">{{ votante.nombre }}</dd>
-        </div>
+      <div class="usuario-menu" #usuarioMenu>
+        <button
+          type="button"
+          id="avatar-usuario"
+          class="usuario-avatar"
+          [class.usuario-avatar--activo]="menuAbierto"
+          [attr.aria-expanded]="menuAbierto"
+          aria-haspopup="true"
+          aria-controls="menu-usuario"
+          [attr.aria-label]="'Cuenta de ' + votante.nombre"
+          (click)="alternarMenu()">
+          {{ iniciales }}
+        </button>
 
-        <div class="dato">
-          <dt>Cédula</dt>
-          <dd id="dato-cedula">{{ votante.cedula }}</dd>
-        </div>
+        <div
+          class="usuario-dropdown"
+          id="menu-usuario"
+          role="menu"
+          *ngIf="menuAbierto">
+          <div class="usuario-dropdown-header">
+            <div class="usuario-dropdown-avatar" aria-hidden="true">{{ iniciales }}</div>
+            <div class="usuario-dropdown-header-texto">
+              <p class="usuario-dropdown-nombre">{{ votante.nombre }}</p>
+              <p class="usuario-dropdown-subtitulo">Información del padrón electoral</p>
+            </div>
+          </div>
 
-        <div class="dato">
-          <dt>Recinto electoral</dt>
-          <dd id="dato-recinto">{{ votante.recinto }}</dd>
-        </div>
+          <dl class="votante-datos">
+            <div class="dato">
+              <dt>Nombre</dt>
+              <dd id="dato-nombre">{{ votante.nombre }}</dd>
+            </div>
 
-        <div class="dato">
-          <dt>Mesa</dt>
-          <dd id="dato-mesa">{{ votante.mesa }}</dd>
-        </div>
+            <div class="dato">
+              <dt>Cédula</dt>
+              <dd id="dato-cedula">{{ votante.cedula }}</dd>
+            </div>
 
-        <div class="dato">
-          <dt>Estado del voto</dt>
-          <dd>
-            <span
-              class="estado-voto"
-              id="dato-estado"
-              [class.estado-voto--votado]="yaVoto"
-              [class.estado-voto--pendiente]="!yaVoto">
-              <span class="estado-voto-punto" aria-hidden="true"></span>
-              {{ votante.estadoVoto }}
-            </span>
-          </dd>
-        </div>
-      </dl>
+            <div class="dato">
+              <dt>Recinto electoral</dt>
+              <dd id="dato-recinto">{{ votante.recinto }}</dd>
+            </div>
 
-      <button type="button" class="votante-button" (click)="salir()">Cerrar sesión</button>
-    </div>
+            <div class="dato">
+              <dt>Mesa</dt>
+              <dd id="dato-mesa">{{ votante.mesa }}</dd>
+            </div>
+
+            <div class="dato">
+              <dt>Estado del voto</dt>
+              <dd>
+                <span
+                  class="estado-voto"
+                  id="dato-estado"
+                  [class.estado-voto--votado]="yaVoto"
+                  [class.estado-voto--pendiente]="!yaVoto">
+                  <span class="estado-voto-punto" aria-hidden="true"></span>
+                  {{ votante.estadoVoto }}
+                </span>
+              </dd>
+            </div>
+          </dl>
+
+          <button type="button" id="boton-salir" class="votante-button" (click)="salir()">Cerrar sesión</button>
+        </div>
+      </div>
+    </header>
 
     <div class="candidatos-card">
       <header class="candidatos-header">

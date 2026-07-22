@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Votante } from '../../models/votante.model';
 import { Candidato } from '../../models/candidato.model';
@@ -12,6 +12,12 @@ import { VotanteService } from '../../services/votante.service';
 export class PageDatosVotanteComponent implements OnInit {
 
   votante!: Votante;
+
+  /** Contenedor del avatar y su dropdown, usado para detectar clicks externos. */
+  @ViewChild('usuarioMenu') usuarioMenu?: ElementRef<HTMLElement>;
+
+  /** Estado del dropdown de la cuenta que cuelga del avatar. */
+  menuAbierto = false;
 
   /** Candidatos de ejemplo para la elección de presidente. */
   candidatos: Candidato[] = [
@@ -46,7 +52,37 @@ export class PageDatosVotanteComponent implements OnInit {
       .join('');
   }
 
+  /** Abre o cierra el dropdown de la cuenta al pulsar el avatar. */
+  alternarMenu(): void {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  /** Cierra el dropdown de la cuenta. */
+  cerrarMenu(): void {
+    this.menuAbierto = false;
+  }
+
+  /** Cierra el dropdown cuando el click ocurre fuera del avatar o del menú. */
+  @HostListener('document:click', ['$event'])
+  alClickDocumento(evento: MouseEvent): void {
+    if (!this.menuAbierto) {
+      return;
+    }
+
+    const contenedor = this.usuarioMenu?.nativeElement;
+    if (contenedor && !contenedor.contains(evento.target as Node)) {
+      this.cerrarMenu();
+    }
+  }
+
+  /** Cierra el dropdown con la tecla Escape, como en cualquier menú de cuenta. */
+  @HostListener('document:keydown.escape')
+  alPresionarEscape(): void {
+    this.cerrarMenu();
+  }
+
   salir(): void {
+    this.cerrarMenu();
     this.router.navigate(['/']);
   }
 
