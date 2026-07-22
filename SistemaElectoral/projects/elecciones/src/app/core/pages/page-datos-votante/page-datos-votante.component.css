@@ -1,0 +1,205 @@
+.votante-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #123a7a 0%, #1976d2 55%, #0d47a1 100%);
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.votante-page-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.25;
+  background: #ffffff;
+  pointer-events: none;
+}
+
+.votante-page-blob--one {
+  width: 340px;
+  height: 340px;
+  top: -120px;
+  left: -100px;
+}
+
+.votante-page-blob--two {
+  width: 420px;
+  height: 420px;
+  bottom: -160px;
+  right: -140px;
+  background: #64b5f6;
+  opacity: 0.2;
+}
+
+.votante-card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(9, 30, 66, 0.35);
+  box-sizing: border-box;
+  animation: votante-card-in 0.35s ease-out;
+}
+
+@keyframes votante-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.votante-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8ecf1;
+}
+
+.votante-avatar {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e3f2fd;
+  color: #0d47a1;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.votante-title {
+  margin: 0 0 2px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+.votante-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #667085;
+}
+
+.votante-datos {
+  margin: 0;
+  padding: 4px 0 0;
+}
+
+.dato {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.dato:last-child {
+  border-bottom: none;
+}
+
+.dato dt {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #8a94a6;
+}
+
+.dato dd {
+  margin: 0;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.estado-voto {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.estado-voto-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.estado-voto--votado {
+  color: #1b7f4d;
+  background: #e6f5ec;
+  border: 1px solid #bde5cd;
+}
+
+.estado-voto--pendiente {
+  color: #a15c00;
+  background: #fff5e5;
+  border: 1px solid #f3d9ac;
+}
+
+.votante-button {
+  width: 100%;
+  margin-top: 26px;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #1976d2, #0d47a1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.35);
+  transition: box-shadow 0.2s ease, transform 0.1s ease, filter 0.2s ease;
+}
+
+.votante-button:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 10px 22px rgba(25, 118, 210, 0.45);
+}
+
+.votante-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.35);
+}
+
+.votante-button:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+@media screen and (max-width: 480px) {
+  .votante-card {
+    padding: 24px 20px;
+  }
+
+  .dato {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .dato dd {
+    text-align: left;
+  }
+}
