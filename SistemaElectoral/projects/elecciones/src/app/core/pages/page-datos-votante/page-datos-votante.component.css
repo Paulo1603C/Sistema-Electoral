@@ -77,6 +77,14 @@
   padding: 4px 0;
 }
 
+/* Agrupa el menú hamburguesa y la marca en el extremo izquierdo de la barra. */
+.votante-topbar-inicio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
 .votante-marca {
   display: flex;
   align-items: center;

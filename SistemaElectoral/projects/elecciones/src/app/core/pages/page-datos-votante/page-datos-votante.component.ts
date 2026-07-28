@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Votante } from '../../models/votante.model';
 import { Candidato } from '../../models/candidato.model';
 import { VotanteService } from '../../services/votante.service';
+import { OpcionSidebar } from '../../components/sidebar/sidebar.component';
 
 @Component({
   selector: 'se-page-datos-votante',
@@ -84,6 +85,11 @@ export class PageDatosVotanteComponent implements OnInit {
   salir(): void {
     this.cerrarMenu();
     this.router.navigate(['/']);
+  }
+
+  /** Reacciona a la opción elegida en el menú lateral (opciones de prueba). */
+  alSeleccionarOpcion(opcion: OpcionSidebar): void {
+    alert('Opción seleccionada: ' + opcion.etiqueta);
   }
 
   /** Marca al candidato elegido y notifica la selección al usuario. */
