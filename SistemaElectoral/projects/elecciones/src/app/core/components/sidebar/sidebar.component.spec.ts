@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { OpcionSidebar, SidebarComponent } from './sidebar.component';
 
@@ -83,6 +85,12 @@ describe('SidebarComponent', () => {
     expect(component.abierto).toBeFalse();
   });
 
+  it('should give every option a target route', () => {
+    for (const opcion of component.opciones) {
+      expect(opcion.ruta).toBeTruthy();
+    }
+  });
+
   it('should close the panel when clicking the dark overlay', () => {
     pulsarToggle();
     (dom().querySelector('.sidebar-overlay') as HTMLElement).click();
@@ -105,5 +113,47 @@ describe('SidebarComponent', () => {
     fixture.detectChanges();
 
     expect(component.abierto).toBeFalse();
+  });
+});
+
+describe('SidebarComponent (con enrutador)', () => {
+  let component: SidebarComponent;
+  let fixture: ComponentFixture<SidebarComponent>;
+  let router: Router;
+
+  const dom = (): HTMLElement => fixture.nativeElement as HTMLElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ CommonModule, RouterTestingModule ],
+      declarations: [ SidebarComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(SidebarComponent);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    spyOn(router, 'navigate');
+    fixture.detectChanges();
+  });
+
+  it('should navigate to the option route instead of showing an alert', () => {
+    spyOn(window, 'alert');
+    (dom().querySelector('#sidebar-toggle') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    (dom().querySelector('#sidebar-opcion-resultados') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(window.alert).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'resultados']);
+  });
+
+  it('should route each option to its own page', () => {
+    for (const opcion of component.opciones) {
+      (router.navigate as jasmine.Spy).calls.reset();
+      component.seleccionar(opcion);
+      expect(router.navigate).toHaveBeenCalledWith(['/', opcion.ruta]);
+    }
   });
 });

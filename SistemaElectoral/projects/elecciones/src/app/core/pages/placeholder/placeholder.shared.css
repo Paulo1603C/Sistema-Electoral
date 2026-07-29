@@ -1,0 +1,99 @@
+/*
+ * Estilos compartidos por las páginas placeholder que cuelgan del menú lateral.
+ * Reutilizan la identidad visual azul del Sistema Electoral con una tarjeta
+ * central de "en construcción".
+ */
+.placeholder-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: linear-gradient(135deg, #123a7a 0%, #1976d2 55%, #0d47a1 100%);
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.placeholder-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.placeholder-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+.placeholder-marca-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.placeholder-marca-texto {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.placeholder-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 48px;
+}
+
+.placeholder-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(13, 71, 161, 0.35);
+}
+
+.placeholder-icono {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  color: #1976d2;
+}
+
+.placeholder-titulo {
+  margin: 0 0 12px;
+  font-size: 26px;
+  color: #0d47a1;
+}
+
+.placeholder-texto {
+  margin: 0 0 28px;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.placeholder-volver {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: #1976d2;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.placeholder-volver:hover {
+  background: #0d47a1;
+}
