@@ -1,0 +1,54 @@
+<div class="placeholder-page">
+  <header class="placeholder-topbar">
+    <se-sidebar></se-sidebar>
+    <div class="placeholder-marca">
+      <span class="placeholder-marca-logo" aria-hidden="true">SE</span>
+      <span class="placeholder-marca-texto">Sistema Electoral</span>
+    </div>
+  </header>
+
+  <main class="placeholder-content">
+    <div class="cuenta-container">
+      <h1 class="cuenta-titulo">{{ titulo }}</h1>
+
+      <div class="cuenta-card">
+        <div class="card-header">
+          <div class="avatar">
+            <span>{{ cuenta.nombre.charAt(0) }}</span>
+          </div>
+          <div class="header-info">
+            <h2>{{ cuenta.nombre }}</h2>
+            <span class="rol-badge">{{ cuenta.rol }}</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <label>Email:</label>
+            <span>{{ cuenta.email }}</span>
+          </div>
+          <div class="info-row">
+            <label>Cédula de Identidad:</label>
+            <span>{{ cuenta.cedula }}</span>
+          </div>
+          <div class="info-row">
+            <label>Teléfono:</label>
+            <span>{{ cuenta.telefono }}</span>
+          </div>
+          <div class="info-row">
+            <label>Registrado desde:</label>
+            <span>{{ cuenta.fechaRegistro }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary">Editar Perfil</button>
+          <button class="btn btn-secondary">Cambiar Contraseña</button>
+          <button class="btn btn-outline">Cerrar Sesión</button>
+        </div>
+      </div>
+
+      <a class="volver-link" routerLink="/datos-votante">← Volver al inicio</a>
+    </div>
+  </main>
+</div>

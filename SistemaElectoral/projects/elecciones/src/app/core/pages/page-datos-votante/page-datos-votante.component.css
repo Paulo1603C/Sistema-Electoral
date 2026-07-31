@@ -1,0 +1,457 @@
+.votante-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #123a7a 0%, #1976d2 55%, #0d47a1 100%);
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.votante-content {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.votante-page-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.25;
+  background: #ffffff;
+  pointer-events: none;
+}
+
+.votante-page-blob--one {
+  width: 340px;
+  height: 340px;
+  top: -120px;
+  left: -100px;
+}
+
+.votante-page-blob--two {
+  width: 420px;
+  height: 420px;
+  bottom: -160px;
+  right: -140px;
+  background: #64b5f6;
+  opacity: 0.2;
+}
+
+@keyframes votante-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes usuario-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.votante-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+/* Agrupa el menú hamburguesa y la marca en el extremo izquierdo de la barra. */
+.votante-topbar-inicio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.votante-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+.votante-marca-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.votante-marca-texto {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Menú de cuenta anclado a la esquina superior derecha. */
+.usuario-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.usuario-avatar {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0d47a1;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(9, 30, 66, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.usuario-avatar:hover {
+  filter: brightness(0.97);
+  box-shadow: 0 8px 20px rgba(9, 30, 66, 0.45);
+}
+
+.usuario-avatar:active {
+  transform: translateY(1px);
+}
+
+.usuario-avatar:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 3px;
+}
+
+.usuario-avatar--activo {
+  border-color: #90caf9;
+  box-shadow: 0 0 0 4px rgba(144, 202, 249, 0.35);
+}
+
+.usuario-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 20px 45px rgba(9, 30, 66, 0.35);
+  box-sizing: border-box;
+  animation: usuario-dropdown-in 0.16s ease-out;
+}
+
+/* Flecha que apunta al avatar, como en los menús de cuenta habituales. */
+.usuario-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  right: 16px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-radius: 3px;
+}
+
+.usuario-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8ecf1;
+}
+
+.usuario-dropdown-avatar {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e3f2fd;
+  color: #0d47a1;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.usuario-dropdown-header-texto {
+  min-width: 0;
+}
+
+.usuario-dropdown-nombre {
+  margin: 0 0 2px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+.usuario-dropdown-subtitulo {
+  margin: 0;
+  font-size: 12px;
+  color: #667085;
+}
+
+.votante-datos {
+  margin: 0;
+  padding: 4px 0 0;
+}
+
+.dato {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.dato:last-child {
+  border-bottom: none;
+}
+
+.dato dt {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #8a94a6;
+}
+
+.dato dd {
+  margin: 0;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.estado-voto {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.estado-voto-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.estado-voto--votado {
+  color: #1b7f4d;
+  background: #e6f5ec;
+  border: 1px solid #bde5cd;
+}
+
+.estado-voto--pendiente {
+  color: #a15c00;
+  background: #fff5e5;
+  border: 1px solid #f3d9ac;
+}
+
+.votante-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #1976d2, #0d47a1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.35);
+  transition: box-shadow 0.2s ease, transform 0.1s ease, filter 0.2s ease;
+}
+
+.votante-button:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 10px 22px rgba(25, 118, 210, 0.45);
+}
+
+.votante-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.35);
+}
+
+.votante-button:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+.candidatos-card {
+  position: relative;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(9, 30, 66, 0.35);
+  box-sizing: border-box;
+  animation: votante-card-in 0.35s ease-out;
+}
+
+.candidatos-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8ecf1;
+  margin-bottom: 20px;
+}
+
+.candidatos-title {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+.candidatos-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #667085;
+}
+
+.candidatos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.candidato-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 22px 16px;
+  background: #f8fafc;
+  border: 2px solid #e8ecf1;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.candidato-card:hover {
+  border-color: #90caf9;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.18);
+}
+
+.candidato-card:active {
+  transform: translateY(1px);
+}
+
+.candidato-card:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+.candidato-card--seleccionado {
+  border-color: #1976d2;
+  background: #e3f2fd;
+  box-shadow: 0 8px 18px rgba(25, 118, 210, 0.3);
+}
+
+.candidato-avatar {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.candidato-nombre {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.candidato-partido {
+  margin: 0;
+  font-size: 12px;
+  color: #667085;
+}
+
+.candidato-marca {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+@media screen and (max-width: 720px) {
+  .candidatos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .votante-marca-texto {
+    display: none;
+  }
+
+  .usuario-dropdown {
+    width: calc(100vw - 32px);
+    padding: 16px;
+  }
+
+  .dato {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .dato dd {
+    text-align: left;
+  }
+
+  .candidatos-card {
+    padding: 24px 20px;
+  }
+
+  .candidatos-grid {
+    grid-template-columns: 1fr;
+  }
+}
