@@ -9,7 +9,8 @@ import { PageRecintosComponent } from './core/pages/placeholder/page-recintos/pa
 import { PagePadronComponent } from './core/pages/placeholder/page-padron/page-padron.component';
 import { PageAdministrarCuentaComponent } from './core/pages/placeholder/page-administrar-cuenta/page-administrar-cuenta.component';
 
-const routes: Routes = [
+/** Rutas de la aplicación. Se exporta para poder probar el mapa de navegación. */
+export const routes: Routes = [
   { path: '', component: PageLoginComponent },
   { path: 'datos-votante', component: PageDatosVotanteComponent },
   { path: 'ver-votos', component: PageVerVotosComponent },

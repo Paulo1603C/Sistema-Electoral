@@ -176,6 +176,55 @@ describe('PageResultadosComponent', () => {
     expect(dom().querySelector('.grafico-tooltip')).toBeNull();
   });
 
+  it('should highlight a row from the keyboard, not only the mouse', () => {
+    const fila = dom().querySelector('#resultado-candidato-3') as HTMLElement;
+
+    expect(fila.getAttribute('tabindex')).toBe('0');
+
+    fila.dispatchEvent(new FocusEvent('focus'));
+    fixture.detectChanges();
+
+    expect(component.candidatoResaltado).toBe(3);
+    expect(fila.querySelector('.grafico-tooltip')).not.toBeNull();
+
+    fila.dispatchEvent(new FocusEvent('blur'));
+    fixture.detectChanges();
+
+    expect(component.candidatoResaltado).toBeNull();
+    expect(dom().querySelector('.grafico-tooltip')).toBeNull();
+  });
+
+  it('should drop the highlight when switching to the table view', () => {
+    component.resaltar(4);
+    fixture.detectChanges();
+    expect(dom().querySelector('.grafico-tooltip')).not.toBeNull();
+
+    component.alternarVista();
+    fixture.detectChanges();
+
+    expect(component.candidatoResaltado).toBeNull();
+    expect(dom().querySelector('.grafico-tooltip')).toBeNull();
+  });
+
+  it('should reflect the active view on the toggle button', () => {
+    const boton = dom().querySelector('#boton-vista') as HTMLButtonElement;
+
+    expect(boton.getAttribute('aria-pressed')).toBe('false');
+    expect(boton.textContent?.trim()).toBe('Ver tabla');
+
+    boton.click();
+    fixture.detectChanges();
+
+    expect(boton.getAttribute('aria-pressed')).toBe('true');
+    expect(boton.textContent?.trim()).toBe('Ver gráfico');
+  });
+
+  it('should place the axis ticks proportionally to the maximum', () => {
+    expect(component.posicionTick(0)).toBe(0);
+    expect(component.posicionTick(component.resultado.escalaMaxima)).toBe(100);
+    expect(component.posicionTick(component.resultado.escalaMaxima / 2)).toBe(50);
+  });
+
   it('should format figures with local thousand and decimal separators', () => {
     expect(component.formatearEntero(1244656)).toBe('1.244.656');
     expect(component.formatearEntero(412)).toBe('412');
