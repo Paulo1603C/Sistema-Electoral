@@ -1,20 +1,619 @@
-<div class="placeholder-page">
-  <header class="placeholder-topbar">
-    <se-sidebar></se-sidebar>
-    <div class="placeholder-marca">
-      <span class="placeholder-marca-logo" aria-hidden="true">SE</span>
-      <span class="placeholder-marca-texto">Sistema Electoral</span>
+<div class="candidatos-page">
+  <!-- Fondo con degradados sutiles -->
+  <div class="candidatos-blob candidatos-blob--one" aria-hidden="true"></div>
+  <div class="candidatos-blob candidatos-blob--two" aria-hidden="true"></div>
+
+  <!-- Barra de navegación superior -->
+  <header class="candidatos-topbar">
+    <div class="topbar-left">
+      <se-sidebar></se-sidebar>
+      <div class="topbar-brand">
+        <span class="topbar-logo" aria-hidden="true">SE</span>
+        <div class="topbar-textos">
+          <span class="topbar-titulo">Sistema Electoral</span>
+          <span class="topbar-subtitulo">Padrón de Candidaturas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <a class="placeholder-volver topbar-link-volver" routerLink="/datos-votante" title="Volver al panel del votante">
+        <svg class="icono-svg" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+        </svg>
+        <span>Volver al inicio</span>
+      </a>
     </div>
   </header>
 
-  <main class="placeholder-content">
-    <section class="placeholder-card">
-      <svg class="placeholder-icono" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="currentColor" d="M12 2 2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-      </svg>
-      <h1 class="placeholder-titulo" id="placeholder-titulo">{{ titulo }}</h1>
-      <p class="placeholder-texto">Aquí se listarán los candidatos participantes. Esta sección está en construcción.</p>
-      <a class="placeholder-volver" routerLink="/datos-votante">← Volver al inicio</a>
+  <!-- Notificación Toast flotante -->
+  <aside
+    *ngIf="notificacion"
+    class="notificacion-toast"
+    [class.notificacion-toast--exito]="notificacion.tipo === 'exito'"
+    [class.notificacion-toast--peligro]="notificacion.tipo === 'peligro'"
+    [class.notificacion-toast--info]="notificacion.tipo === 'info'"
+    role="status"
+    aria-live="polite">
+    <span class="notificacion-icono" aria-hidden="true">
+      {{ notificacion.tipo === 'exito' ? '✓' : (notificacion.tipo === 'peligro' ? '✕' : 'ℹ') }}
+    </span>
+    <span class="notificacion-texto">{{ notificacion.mensaje }}</span>
+    <button type="button" class="notificacion-cerrar" (click)="cerrarNotificacion()" aria-label="Cerrar notificación">×</button>
+  </aside>
+
+  <!-- Contenedor principal de la vista -->
+  <main class="candidatos-main">
+    <!-- Encabezado de la página -->
+    <section class="candidatos-header-section">
+      <div class="header-textos">
+        <div class="badge-dignidad">Elecciones Generales 2026</div>
+        <h1 class="header-titulo" id="placeholder-titulo">{{ titulo }}</h1>
+        <p class="header-descripcion">
+          Administración, registro y control oficial de los candidatos participantes a la Presidencia de la República.
+        </p>
+      </div>
+
+      <div class="header-acciones">
+        <button
+          type="button"
+          id="btn-nuevo-candidato"
+          class="btn btn-primary btn-con-icono"
+          (click)="abrirModalCrear()">
+          <svg class="icono-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+          </svg>
+          <span>Registrar Candidato</span>
+        </button>
+
+        <button
+          type="button"
+          id="btn-restablecer"
+          class="btn btn-secondary"
+          (click)="restablecerDatos()"
+          title="Restablece los 5 candidatos oficiales por defecto">
+          <span>Restablecer</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Tarjetas de métricas rápidas (KPIs) -->
+    <section class="metricas-grid" aria-label="Métricas del padrón">
+      <article class="metrica-card">
+        <span class="metrica-etiqueta">Total Registrados</span>
+        <p class="metrica-valor" id="total-candidatos">{{ totalCandidatos }}</p>
+        <span class="metrica-detalle">Candidatos en padrón</span>
+      </article>
+
+      <article class="metrica-card">
+        <span class="metrica-etiqueta">Candidatos Activos</span>
+        <p class="metrica-valor metrica-valor--activo" id="total-activos">{{ totalActivos }}</p>
+        <span class="metrica-detalle">Habilitados para votación</span>
+      </article>
+
+      <article class="metrica-card">
+        <span class="metrica-etiqueta">Partidos Políticos</span>
+        <p class="metrica-valor" id="total-partidos">{{ totalPartidos }}</p>
+        <span class="metrica-detalle">Movimientos en contienda</span>
+      </article>
+    </section>
+
+    <!-- Barra de herramientas: Búsqueda, Filtros y Vista -->
+    <section class="toolbar-section">
+      <div class="toolbar-busqueda">
+        <svg class="busqueda-icono" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+        </svg>
+        <input
+          type="search"
+          id="busqueda-candidato"
+          class="busqueda-input"
+          placeholder="Buscar por candidato, partido o lista..."
+          [(ngModel)]="terminoBusqueda"
+          (ngModelChange)="aplicarFiltros()"
+          aria-label="Buscar candidatos">
+        <button
+          *ngIf="terminoBusqueda"
+          type="button"
+          class="busqueda-limpiar"
+          (click)="limpiarBusqueda()"
+          aria-label="Limpiar búsqueda">✕</button>
+      </div>
+
+      <div class="toolbar-filtros">
+        <div class="filtros-pills" role="radiogroup" aria-label="Filtrar por estado">
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--activo]="filtroEstado === 'todos'"
+            (click)="seleccionarFiltroEstado('todos')">
+            Todos ({{ totalCandidatos }})
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--activo]="filtroEstado === 'Activo'"
+            (click)="seleccionarFiltroEstado('Activo')">
+            Activos ({{ totalActivos }})
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.pill-btn--activo]="filtroEstado === 'Inactivo'"
+            (click)="seleccionarFiltroEstado('Inactivo')">
+            Inactivos ({{ totalCandidatos - totalActivos }})
+          </button>
+        </div>
+
+        <div class="vista-selector" role="group" aria-label="Cambiar vista">
+          <button
+            type="button"
+            id="vista-tarjetas-btn"
+            class="vista-btn"
+            [class.vista-btn--activo]="vistaModo === 'tarjetas'"
+            (click)="cambiarModoVista('tarjetas')"
+            title="Vista en tarjetas"
+            aria-label="Vista en cuadrícula">
+            <svg class="icono-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M4 11h5V5H4v6zm0 7h5v-5H4v5zm6 0h5v-5h-5v5zm6 0h5v-5h-5v5zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            id="vista-tabla-btn"
+            class="vista-btn"
+            [class.vista-btn--activo]="vistaModo === 'tabla'"
+            (click)="cambiarModoVista('tabla')"
+            title="Vista en tabla"
+            aria-label="Vista en tabla">
+            <svg class="icono-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M4 14h16v-2H4v2zm0 4h16v-2H4v2zM4 6v2h16V6H4z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Estado vacío si no hay resultados -->
+    <section *ngIf="candidatosFiltrados.length === 0" class="candidatos-vacio" aria-live="polite">
+      <div class="vacio-icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" class="icono-svg-lg">
+          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+        </svg>
+      </div>
+      <h2 class="vacio-titulo">No se encontraron candidatos</h2>
+      <p class="vacio-texto">
+        No hay registros que coincidan con "{{ terminoBusqueda }}" o con el filtro seleccionado.
+      </p>
+      <div class="vacio-acciones">
+        <button *ngIf="terminoBusqueda || filtroEstado !== 'todos'" type="button" class="btn btn-secondary" (click)="limpiarBusqueda(); seleccionarFiltroEstado('todos')">
+          Limpiar filtros
+        </button>
+        <button type="button" class="btn btn-primary" (click)="abrirModalCrear()">
+          + Registrar nuevo candidato
+        </button>
+      </div>
+    </section>
+
+    <!-- Vista 1: Cuadrícula de tarjetas minimalistas -->
+    <section *ngIf="vistaModo === 'tarjetas' && candidatosFiltrados.length > 0" class="candidatos-grid" id="candidatos-grid">
+      <article
+        *ngFor="let c of candidatosFiltrados"
+        class="candidato-card"
+        [id]="'candidato-card-' + c.id">
+        <!-- Barra de acento con el color del partido -->
+        <div class="card-acento" [style.background]="c.color"></div>
+
+        <div class="card-contenido">
+          <div class="card-header-fila">
+            <div class="candidato-avatar" [style.background]="c.color" aria-hidden="true">
+              {{ c.iniciales }}
+            </div>
+            <div class="card-badges">
+              <span class="badge-lista" *ngIf="c.lista">{{ c.lista }}</span>
+              <span
+                class="badge-estado"
+                [class.badge-estado--activo]="c.estado === 'Activo'"
+                [class.badge-estado--inactivo]="c.estado === 'Inactivo'">
+                <span class="punto-estado" aria-hidden="true"></span>
+                {{ c.estado || 'Activo' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-cuerpo">
+            <h2 class="candidato-nombre" [title]="c.nombre">{{ c.nombre }}</h2>
+            <p class="candidato-partido" [title]="c.partido">{{ c.partido }}</p>
+            <p class="candidato-cargo">{{ c.cargo || 'Presidencia de la República' }}</p>
+
+            <p class="candidato-propuesta" *ngIf="c.propuestaPrincipal">
+              "{{ c.propuestaPrincipal }}"
+            </p>
+          </div>
+
+          <div class="card-pie">
+            <button
+              type="button"
+              class="btn-card-accion btn-card-detalle"
+              [id]="'btn-detalle-' + c.id"
+              (click)="abrirModalDetalle(c)"
+              title="Ver ficha completa">
+              Ver detalle
+            </button>
+            <button
+              type="button"
+              class="btn-card-accion btn-card-editar"
+              [id]="'btn-editar-' + c.id"
+              (click)="abrirModalEditar(c)"
+              title="Editar candidato">
+              Editar
+            </button>
+            <button
+              type="button"
+              class="btn-card-accion btn-card-eliminar"
+              [id]="'btn-eliminar-' + c.id"
+              (click)="abrirModalEliminar(c)"
+              title="Eliminar candidato">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Vista 2: Tabla minimalista accesible -->
+    <section *ngIf="vistaModo === 'tabla' && candidatosFiltrados.length > 0" class="candidatos-tabla-contenedor">
+      <table class="candidatos-tabla" aria-label="Tabla de candidatos inscritos">
+        <thead>
+          <tr>
+            <th scope="col">Candidato</th>
+            <th scope="col">Organización Política</th>
+            <th scope="col">Lista</th>
+            <th scope="col">Estado</th>
+            <th scope="col" class="th-acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of candidatosFiltrados" [id]="'candidato-row-' + c.id">
+            <td class="td-candidato">
+              <div class="candidato-celda">
+                <span class="candidato-avatar-sm" [style.background]="c.color" aria-hidden="true">{{ c.iniciales }}</span>
+                <div>
+                  <span class="celda-nombre">{{ c.nombre }}</span>
+                  <span class="celda-sub">{{ c.cargo || 'Presidencia' }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="td-partido">{{ c.partido }}</td>
+            <td class="td-lista"><span class="badge-lista">{{ c.lista || '—' }}</span></td>
+            <td class="td-estado">
+              <span
+                class="badge-estado"
+                [class.badge-estado--activo]="c.estado === 'Activo'"
+                [class.badge-estado--inactivo]="c.estado === 'Inactivo'">
+                <span class="punto-estado" aria-hidden="true"></span>
+                {{ c.estado || 'Activo' }}
+              </span>
+            </td>
+            <td class="td-acciones">
+              <div class="tabla-acciones-grupo">
+                <button type="button" class="btn-tabla-btn" (click)="abrirModalDetalle(c)" title="Ver detalle">
+                  Detalle
+                </button>
+                <button type="button" class="btn-tabla-btn" (click)="abrirModalEditar(c)" title="Editar">
+                  Editar
+                </button>
+                <button type="button" class="btn-tabla-btn btn-tabla-btn--peligro" (click)="abrirModalEliminar(c)" title="Eliminar">
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: Formulario de Creación / Edición -->
+  <!-- ========================================================= -->
+  <div
+    *ngIf="modalFormularioVisible"
+    class="modal-backdrop"
+    (click)="cerrarModalFormulario()"
+    aria-hidden="true"></div>
+
+  <div
+    *ngIf="modalFormularioVisible"
+    class="modal-dialog modal-dialog--formulario"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'modal-form-titulo'">
+    <header class="modal-header">
+      <div class="modal-header-info">
+        <span class="modal-etiqueta-modo">{{ modoFormulario === 'crear' ? 'Nuevo Registro' : 'Modificación' }}</span>
+        <h2 id="modal-form-titulo" class="modal-titulo">
+          {{ modoFormulario === 'crear' ? 'Registrar Candidato' : 'Editar Candidato' }}
+        </h2>
+      </div>
+      <button
+        type="button"
+        class="modal-cerrar-btn"
+        (click)="cerrarModalFormulario()"
+        aria-label="Cerrar ventana">×</button>
+    </header>
+
+    <div class="modal-cuerpo">
+      <!-- Errores de validación -->
+      <div *ngIf="erroresValidacion.length > 0" class="alerta-errores" role="alert">
+        <p class="alerta-titulo">Por favor corrige los siguientes campos:</p>
+        <ul>
+          <li *ngFor="let err of erroresValidacion">{{ err }}</li>
+        </ul>
+      </div>
+
+      <form class="candidato-form" (ngSubmit)="guardarCandidato()" id="form-candidato">
+        <!-- Nombre completo -->
+        <div class="campo-grupo">
+          <label for="campo-nombre" class="campo-label">
+            Nombre Completo <span class="requerido" aria-hidden="true">*</span>
+          </label>
+          <input
+            type="text"
+            id="campo-nombre"
+            name="nombre"
+            class="campo-control"
+            placeholder="Ej. Sofía Benalcázar Molina"
+            [(ngModel)]="formulario.nombre"
+            (ngModelChange)="alCambiarNombre()"
+            required>
+        </div>
+
+        <!-- Partido Político y Lista -->
+        <div class="campos-fila">
+          <div class="campo-grupo">
+            <label for="campo-partido" class="campo-label">
+              Organización o Partido Político <span class="requerido" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="campo-partido"
+              name="partido"
+              class="campo-control"
+              placeholder="Ej. Movimiento Esperanza Ciudadana"
+              [(ngModel)]="formulario.partido"
+              required>
+          </div>
+
+          <div class="campo-grupo campo-grupo--corto">
+            <label for="campo-lista" class="campo-label">Lista / Número</label>
+            <input
+              type="text"
+              id="campo-lista"
+              name="lista"
+              class="campo-control"
+              placeholder="Ej. Lista 18"
+              [(ngModel)]="formulario.lista">
+          </div>
+        </div>
+
+        <!-- Cargo y Estado -->
+        <div class="campos-fila">
+          <div class="campo-grupo">
+            <label for="campo-cargo" class="campo-label">Dignidad / Cargo</label>
+            <input
+              type="text"
+              id="campo-cargo"
+              name="cargo"
+              class="campo-control"
+              [(ngModel)]="formulario.cargo"
+              placeholder="Presidencia de la República">
+          </div>
+
+          <div class="campo-grupo campo-grupo--corto">
+            <label for="campo-estado" class="campo-label">Estado</label>
+            <select
+              id="campo-estado"
+              name="estado"
+              class="campo-control campo-select"
+              [(ngModel)]="formulario.estado">
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Color e Iniciales -->
+        <div class="campos-fila">
+          <div class="campo-grupo">
+            <label class="campo-label">Color Distintivo del Partido</label>
+            <div class="color-picker-chips" role="radiogroup" aria-label="Colores predefinidos">
+              <button
+                type="button"
+                *ngFor="let col of paletaColores"
+                class="color-chip"
+                [style.background]="col"
+                [class.color-chip--seleccionado]="formulario.color === col"
+                (click)="seleccionarColor(col)"
+                [attr.aria-label]="'Color ' + col">
+                <span *ngIf="formulario.color === col">✓</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="campo-grupo campo-grupo--corto">
+            <label for="campo-iniciales" class="campo-label">Iniciales Avatar</label>
+            <input
+              type="text"
+              id="campo-iniciales"
+              name="iniciales"
+              class="campo-control"
+              maxlength="3"
+              placeholder="Ej. SB"
+              [(ngModel)]="formulario.iniciales">
+          </div>
+        </div>
+
+        <!-- Propuesta principal -->
+        <div class="campo-grupo">
+          <label for="campo-propuesta" class="campo-label">Eje o Propuesta Principal</label>
+          <textarea
+            id="campo-propuesta"
+            name="propuestaPrincipal"
+            rows="3"
+            class="campo-control campo-textarea"
+            placeholder="Resumen del plan de gobierno o propuesta destacada..."
+            [(ngModel)]="formulario.propuestaPrincipal"></textarea>
+        </div>
+      </form>
+    </div>
+
+    <footer class="modal-pie">
+      <button
+        type="button"
+        id="btn-cancelar-form"
+        class="btn btn-secondary"
+        (click)="cerrarModalFormulario()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="form-candidato"
+        id="btn-guardar-candidato"
+        class="btn btn-primary">
+        {{ modoFormulario === 'crear' ? 'Guardar Candidato' : 'Actualizar Cambios' }}
+      </button>
+    </footer>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: Ficha de Detalle de Candidato -->
+  <!-- ========================================================= -->
+  <div
+    *ngIf="modalDetalleVisible"
+    class="modal-backdrop"
+    (click)="cerrarModalDetalle()"
+    aria-hidden="true"></div>
+
+  <div
+    *ngIf="modalDetalleVisible && candidatoDetalle"
+    class="modal-dialog modal-dialog--detalle"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'modal-detalle-titulo'">
+    <header class="modal-header">
+      <h2 id="modal-detalle-titulo" class="modal-titulo">Ficha Electoral del Candidato</h2>
+      <button
+        type="button"
+        class="modal-cerrar-btn"
+        (click)="cerrarModalDetalle()"
+        aria-label="Cerrar detalle">×</button>
+    </header>
+
+    <div class="modal-cuerpo">
+      <div class="detalle-perfil-card">
+        <div class="detalle-avatar" [style.background]="candidatoDetalle.color" aria-hidden="true">
+          {{ candidatoDetalle.iniciales }}
+        </div>
+        <div class="detalle-titulares">
+          <h3 class="detalle-nombre">{{ candidatoDetalle.nombre }}</h3>
+          <p class="detalle-partido">{{ candidatoDetalle.partido }}</p>
+          <div class="detalle-badges-fila">
+            <span class="badge-lista" *ngIf="candidatoDetalle.lista">{{ candidatoDetalle.lista }}</span>
+            <span
+              class="badge-estado"
+              [class.badge-estado--activo]="candidatoDetalle.estado === 'Activo'"
+              [class.badge-estado--inactivo]="candidatoDetalle.estado === 'Inactivo'">
+              <span class="punto-estado" aria-hidden="true"></span>
+              {{ candidatoDetalle.estado || 'Activo' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <dl class="detalle-dl">
+        <div class="detalle-dl-fila">
+          <dt>Dignidad postulado:</dt>
+          <dd>{{ candidatoDetalle.cargo || 'Presidencia de la República' }}</dd>
+        </div>
+        <div class="detalle-dl-fila">
+          <dt>Identificador único:</dt>
+          <dd>ID #{{ candidatoDetalle.id }}</dd>
+        </div>
+        <div class="detalle-dl-fila" *ngIf="candidatoDetalle.fechaInscripcion">
+          <dt>Fecha de inscripción:</dt>
+          <dd>{{ candidatoDetalle.fechaInscripcion }}</dd>
+        </div>
+        <div class="detalle-dl-fila">
+          <dt>Color asignado:</dt>
+          <dd>
+            <span class="color-muestra" [style.background]="candidatoDetalle.color"></span>
+            {{ candidatoDetalle.color }}
+          </dd>
+        </div>
+        <div class="detalle-propuesta-caja" *ngIf="candidatoDetalle.propuestaPrincipal">
+          <dt class="propuesta-etiqueta">Propuesta Principal de Gobierno:</dt>
+          <dd class="propuesta-texto">"{{ candidatoDetalle.propuestaPrincipal }}"</dd>
+        </div>
+      </dl>
+    </div>
+
+    <footer class="modal-pie">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cerrarModalDetalle()">
+        Cerrar
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="cerrarModalDetalle(); abrirModalEditar(candidatoDetalle)">
+        Editar Candidato
+      </button>
+    </footer>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: Confirmación de Eliminación -->
+  <!-- ========================================================= -->
+  <div
+    *ngIf="modalEliminarVisible"
+    class="modal-backdrop"
+    (click)="cerrarModalEliminar()"
+    aria-hidden="true"></div>
+
+  <div
+    *ngIf="modalEliminarVisible && candidatoAEliminar"
+    class="modal-dialog modal-dialog--eliminar"
+    role="alertdialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'modal-eliminar-titulo'">
+    <div class="eliminar-contenido">
+      <div class="eliminar-icono" aria-hidden="true">⚠️</div>
+      <h2 id="modal-eliminar-titulo" class="eliminar-titulo">¿Eliminar candidato?</h2>
+      <p class="eliminar-texto">
+        ¿Estás seguro de que deseas eliminar de la lista electoral a
+        <strong>{{ candidatoAEliminar.nombre }}</strong>?
+        Esta acción quitará al candidato del padrón activo.
+      </p>
+
+      <div class="eliminar-acciones">
+        <button
+          type="button"
+          id="btn-cancelar-eliminar"
+          class="btn btn-secondary"
+          (click)="cerrarModalEliminar()">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          id="btn-confirmar-eliminar"
+          class="btn btn-danger"
+          (click)="confirmarEliminacion()">
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
