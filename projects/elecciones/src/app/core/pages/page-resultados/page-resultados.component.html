@@ -1,0 +1,266 @@
+<div class="resultados-page">
+  <div class="resultados-blob resultados-blob--one"></div>
+  <div class="resultados-blob resultados-blob--two"></div>
+
+  <div class="resultados-content">
+    <header class="resultados-topbar">
+      <se-sidebar></se-sidebar>
+      <div class="resultados-marca">
+        <span class="resultados-marca-logo" aria-hidden="true">SE</span>
+        <span class="resultados-marca-texto">Sistema Electoral</span>
+      </div>
+    </header>
+
+    <!-- Cabecera: qué dignidad se escrutó y cuánto del conteo está procesado. -->
+    <section class="resultados-card resultados-cabecera">
+      <div class="cabecera-encabezado">
+        <div class="cabecera-texto">
+          <p class="cabecera-eyebrow">Elecciones generales 2026 · Datos de simulación</p>
+          <h1 class="cabecera-titulo" id="resultados-titulo">{{ titulo }}</h1>
+          <p class="cabecera-dignidad" id="resultados-dignidad">{{ resultado.dignidad }}</p>
+          <p class="cabecera-ambito">{{ resultado.ambito }}</p>
+        </div>
+
+        <span
+          class="estado-escrutinio"
+          id="estado-escrutinio"
+          [class.estado-escrutinio--finalizado]="resultado.escrutinioFinalizado"
+          [class.estado-escrutinio--en-curso]="!resultado.escrutinioFinalizado">
+          <svg class="estado-escrutinio-icono" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              *ngIf="resultado.escrutinioFinalizado"
+              fill="currentColor"
+              d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+            <path
+              *ngIf="!resultado.escrutinioFinalizado"
+              fill="currentColor"
+              d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"></path>
+          </svg>
+          {{ resultado.escrutinioFinalizado ? 'Escrutinio finalizado' : 'Escrutinio en curso' }}
+        </span>
+      </div>
+
+      <div class="cabecera-avance">
+        <div class="avance-encabezado">
+          <span class="avance-etiqueta">Actas procesadas</span>
+          <span class="avance-valor" id="avance-actas">
+            {{ formatearEntero(resultado.actasProcesadas) }} de {{ formatearEntero(resultado.actasTotales) }}
+            · {{ formatearPorcentaje(resultado.avanceActas) }}
+          </span>
+        </div>
+        <div class="avance-pista" aria-hidden="true">
+          <span class="avance-relleno" [style.width.%]="resultado.avanceActas"></span>
+        </div>
+        <p class="cabecera-corte">Corte informativo: {{ resultado.fechaCorte }}</p>
+      </div>
+    </section>
+
+    <!-- Candidato más votado: la cifra con la que se lee toda la vista. -->
+    <section class="resultados-card resultados-ganador" id="tarjeta-ganador">
+      <div class="ganador-identidad">
+        <span class="ganador-avatar" aria-hidden="true">{{ resultado.ganador.iniciales }}</span>
+        <div class="ganador-texto">
+          <span class="ganador-chip">Candidato más votado</span>
+          <h2 class="ganador-nombre" id="ganador-nombre">{{ resultado.ganador.nombre }}</h2>
+          <p class="ganador-partido">{{ resultado.ganador.partido }}</p>
+        </div>
+      </div>
+
+      <div class="ganador-cifras">
+        <p class="ganador-hero" id="ganador-porcentaje">{{ formatearPorcentaje(resultado.ganador.porcentaje) }}</p>
+        <p class="ganador-hero-nota">de los votos válidos</p>
+        <dl class="ganador-detalle">
+          <div class="ganador-detalle-item">
+            <dt>Votos obtenidos</dt>
+            <dd id="ganador-votos">{{ formatearEntero(resultado.ganador.votos) }}</dd>
+          </div>
+          <div class="ganador-detalle-item">
+            <dt>Ventaja sobre el segundo</dt>
+            <dd id="ganador-ventaja">
+              {{ formatearEntero(resultado.ventajaVotos) }} votos
+              ({{ formatearPorcentaje(resultado.ventajaPuntos) }})
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Indicadores del padrón. -->
+    <section class="resultados-indicadores" id="indicadores-padron" aria-label="Indicadores del padrón electoral">
+      <article class="indicador">
+        <p class="indicador-etiqueta">Electores habilitados</p>
+        <p class="indicador-valor" id="indicador-habilitados">{{ formatearEntero(resultado.electoresHabilitados) }}</p>
+        <p class="indicador-nota">Padrón de la circunscripción</p>
+      </article>
+
+      <article class="indicador">
+        <p class="indicador-etiqueta">Sufragantes</p>
+        <p class="indicador-valor" id="indicador-sufragantes">{{ formatearEntero(resultado.totalSufragantes) }}</p>
+        <p class="indicador-nota">Válidos, nulos y blancos</p>
+      </article>
+
+      <article class="indicador">
+        <p class="indicador-etiqueta">Participación</p>
+        <p class="indicador-valor" id="indicador-participacion">{{ formatearPorcentaje(resultado.participacion) }}</p>
+        <div class="indicador-medidor" aria-hidden="true">
+          <span class="indicador-medidor-relleno" [style.width.%]="resultado.participacion"></span>
+        </div>
+      </article>
+
+      <article class="indicador">
+        <p class="indicador-etiqueta">Ausentismo</p>
+        <p class="indicador-valor" id="indicador-ausentismo">{{ formatearPorcentaje(resultado.ausentismo) }}</p>
+        <p class="indicador-nota">Sobre electores habilitados</p>
+      </article>
+    </section>
+
+    <!-- Gráfico de votos por candidato, con su tabla equivalente. -->
+    <section class="resultados-card resultados-grafico">
+      <header class="grafico-encabezado">
+        <div>
+          <h2 class="grafico-titulo">Votos por candidato</h2>
+          <p class="grafico-subtitulo">
+            Porcentaje sobre los votos válidos. Eje de 0 a {{ resultado.escalaMaxima }} %.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="boton-vista"
+          class="grafico-vista"
+          [attr.aria-pressed]="vistaTabla"
+          (click)="alternarVista()">
+          {{ vistaTabla ? 'Ver gráfico' : 'Ver tabla' }}
+        </button>
+      </header>
+
+      <div class="grafico-cuerpo" *ngIf="!vistaTabla; else tablaResultados">
+        <ol class="grafico-lista" id="grafico-candidatos">
+          <li
+            class="grafico-fila"
+            *ngFor="let candidato of resultado.candidatos"
+            [id]="'resultado-candidato-' + candidato.id"
+            [class.grafico-fila--activa]="candidatoResaltado === candidato.id"
+            [class.grafico-fila--ganador]="candidato.posicion === 1"
+            tabindex="0"
+            (mouseenter)="resaltar(candidato.id)"
+            (mouseleave)="resaltar(null)"
+            (focus)="resaltar(candidato.id)"
+            (blur)="resaltar(null)">
+            <div class="grafico-identidad">
+              <span class="grafico-posicion" aria-hidden="true">{{ candidato.posicion }}</span>
+              <span class="grafico-avatar" aria-hidden="true">{{ candidato.iniciales }}</span>
+              <span class="grafico-nombres">
+                <span class="grafico-nombre">{{ candidato.nombre }}</span>
+                <span class="grafico-partido">{{ candidato.partido }}</span>
+              </span>
+            </div>
+
+            <div class="grafico-pista">
+              <span
+                class="grafico-linea"
+                *ngFor="let tick of ejeTicks"
+                [style.left.%]="posicionTick(tick)"
+                aria-hidden="true"></span>
+              <span class="grafico-barra" [style.width.%]="anchoBarra(candidato)" aria-hidden="true"></span>
+              <span class="grafico-tooltip" *ngIf="candidatoResaltado === candidato.id">
+                {{ descripcionVotacion(candidato) }}
+              </span>
+            </div>
+
+            <p class="grafico-valor">
+              <span class="grafico-valor-porcentaje">{{ formatearPorcentaje(candidato.porcentaje) }}</span>
+              <span class="grafico-valor-votos">{{ formatearEntero(candidato.votos) }} votos</span>
+            </p>
+          </li>
+        </ol>
+
+        <!-- El eje repite la rejilla de las filas para alinearse con las pistas. -->
+        <div class="grafico-eje" aria-hidden="true">
+          <span class="grafico-eje-hueco"></span>
+          <span class="grafico-eje-pista">
+            <span
+              class="grafico-eje-marca"
+              *ngFor="let tick of ejeTicks"
+              [style.left.%]="posicionTick(tick)">{{ tick }} %</span>
+          </span>
+          <span class="grafico-eje-hueco"></span>
+        </div>
+      </div>
+
+      <ng-template #tablaResultados>
+        <div class="tabla-envoltura">
+          <table class="tabla" id="tabla-resultados">
+            <caption class="tabla-caption">
+              Votos y porcentaje sobre válidos por candidato, ordenados de mayor a menor votación.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col" class="tabla-columna-numero">#</th>
+                <th scope="col">Candidato</th>
+                <th scope="col">Organización política</th>
+                <th scope="col" class="tabla-columna-cifra">Votos</th>
+                <th scope="col" class="tabla-columna-cifra">% válidos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let candidato of resultado.candidatos" [id]="'fila-candidato-' + candidato.id">
+                <td class="tabla-columna-numero">{{ candidato.posicion }}</td>
+                <th scope="row" class="tabla-candidato">{{ candidato.nombre }}</th>
+                <td>{{ candidato.partido }}</td>
+                <td class="tabla-columna-cifra">{{ formatearEntero(candidato.votos) }}</td>
+                <td class="tabla-columna-cifra">{{ formatearPorcentaje(candidato.porcentaje) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="tabla-columna-numero"></td>
+                <th scope="row">Total de votos válidos</th>
+                <td></td>
+                <td class="tabla-columna-cifra">{{ formatearEntero(resultado.votosValidos) }}</td>
+                <td class="tabla-columna-cifra">100,00 %</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Composición del total de sufragios emitidos. -->
+    <section class="resultados-card resultados-composicion">
+      <header class="composicion-encabezado">
+        <h2 class="composicion-titulo">Composición de los sufragios</h2>
+        <p class="composicion-subtitulo">
+          Reparto de los {{ formatearEntero(resultado.totalSufragantes) }} sufragios emitidos.
+        </p>
+      </header>
+
+      <div class="composicion-barra" aria-hidden="true">
+        <span
+          class="composicion-segmento"
+          *ngFor="let segmento of resultado.composicion"
+          [ngClass]="'composicion-segmento--' + segmento.clave"
+          [style.flex-grow]="segmento.porcentaje"></span>
+      </div>
+
+      <dl class="composicion-leyenda" id="composicion-leyenda">
+        <div class="composicion-item" *ngFor="let segmento of resultado.composicion">
+          <dt class="composicion-item-etiqueta">
+            <span class="composicion-marca" [ngClass]="'composicion-marca--' + segmento.clave" aria-hidden="true"></span>
+            {{ segmento.etiqueta }}
+          </dt>
+          <dd class="composicion-item-valor">
+            <span class="composicion-item-porcentaje">{{ formatearPorcentaje(segmento.porcentaje) }}</span>
+            <span class="composicion-item-votos">{{ formatearEntero(segmento.votos) }} votos</span>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <footer class="resultados-pie">
+      <p class="resultados-nota">
+        Cifras de simulación para validar el diseño de la vista. No corresponden a un proceso electoral real.
+      </p>
+      <a class="resultados-volver" routerLink="/datos-votante">← Volver al inicio</a>
+    </footer>
+  </div>
+</div>
