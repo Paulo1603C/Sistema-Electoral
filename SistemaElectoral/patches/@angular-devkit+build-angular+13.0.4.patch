@@ -1,0 +1,17 @@
+diff --git a/node_modules/@angular-devkit/build-angular/src/webpack/plugins/css-optimizer-plugin.js b/node_modules/@angular-devkit/build-angular/src/webpack/plugins/css-optimizer-plugin.js
+index e8f5948..c673e09 100644
+--- a/node_modules/@angular-devkit/build-angular/src/webpack/plugins/css-optimizer-plugin.js
++++ b/node_modules/@angular-devkit/build-angular/src/webpack/plugins/css-optimizer-plugin.js
+@@ -115,8 +115,10 @@ class CssOptimizerPlugin {
+             // browserslist uses the name `ios_saf` for iOS Safari whereas esbuild uses `ios`
+             if (browserName === 'ios_saf') {
+                 browserName = 'ios';
+-                // browserslist also uses ranges for iOS Safari versions but only the lowest is required
+-                // to perform minimum supported feature checks. esbuild also expects a single version.
++            }
++            // browserslist versions can come as ranges (e.g. `18.5-18.7` for Safari) but esbuild
++            // expects a single version. Only the lowest is required for minimum supported feature checks.
++            if (browserName === 'safari' || browserName === 'ios') {
+                 [version] = version.split('-');
+             }
+             if (esBuildSupportedBrowsers.has(browserName)) {

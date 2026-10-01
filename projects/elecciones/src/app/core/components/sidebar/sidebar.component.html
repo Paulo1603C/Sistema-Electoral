@@ -1,0 +1,59 @@
+<!-- Botón hamburguesa: se integra en la barra superior y despliega el panel. -->
+<button
+  type="button"
+  id="sidebar-toggle"
+  class="sidebar-toggle"
+  [class.sidebar-toggle--activo]="abierto"
+  [attr.aria-expanded]="abierto"
+  aria-haspopup="true"
+  aria-controls="sidebar-panel"
+  aria-label="Abrir menú de navegación"
+  (click)="alternar()">
+  <span class="sidebar-toggle-barra" aria-hidden="true"></span>
+  <span class="sidebar-toggle-barra" aria-hidden="true"></span>
+  <span class="sidebar-toggle-barra" aria-hidden="true"></span>
+</button>
+
+<!-- Fondo oscuro: al pulsarlo se cierra el panel. -->
+<div
+  class="sidebar-overlay"
+  *ngIf="abierto"
+  (click)="cerrar()"
+  aria-hidden="true"></div>
+
+<!-- Panel lateral con las opciones de navegación electorales. -->
+<aside
+  class="sidebar-panel"
+  id="sidebar-panel"
+  [class.sidebar-panel--abierto]="abierto"
+  role="navigation"
+  aria-label="Menú principal">
+  <div class="sidebar-header">
+    <span class="sidebar-marca-logo" aria-hidden="true">SE</span>
+    <div class="sidebar-header-texto">
+      <p class="sidebar-titulo">Sistema Electoral</p>
+      <p class="sidebar-subtitulo">Panel de navegación</p>
+    </div>
+    <button
+      type="button"
+      id="sidebar-cerrar"
+      class="sidebar-cerrar"
+      aria-label="Cerrar menú"
+      (click)="cerrar()">×</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button
+      type="button"
+      *ngFor="let opcion of opciones"
+      class="sidebar-opcion"
+      [id]="'sidebar-opcion-' + opcion.clave"
+      [class.sidebar-opcion--activa]="opcionActiva === opcion.clave"
+      (click)="seleccionar(opcion)">
+      <svg class="sidebar-opcion-icono" viewBox="0 0 24 24" aria-hidden="true">
+        <path [attr.d]="opcion.icono"></path>
+      </svg>
+      <span class="sidebar-opcion-texto">{{ opcion.etiqueta }}</span>
+    </button>
+  </nav>
+</aside>
